@@ -208,6 +208,11 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                 body: new ListView(
                   children: <Widget>[
                     new ListTile(
+                      leading: new Icon(Icons.all_inclusive),
+                      title: new Text("Infinitus GO"),
+                      onTap: () => Navigator.pushNamed(context, "/"),
+                    ),
+                    new ListTile(
                       leading: new Icon(Icons.settings),
                       title: new Text("Settings"),
                       onTap: () => Navigator.pushNamed(context, "/settings"),
