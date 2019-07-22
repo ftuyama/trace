@@ -1,7 +1,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/launch_background"/>
-    <item android:drawable="@drawable/splash_icon"
-    	android:width="192dp"
-        android:height="192dp"
-        android:gravity="center"/>
+    <item>
+        <bitmap
+            android:gravity="fill_horizontal"
+            android:src="@drawable/infinitus_logo" />
+    </item>
 </layer-list>

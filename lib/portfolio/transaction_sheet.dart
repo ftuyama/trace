@@ -580,6 +580,7 @@ class TransactionSheetState extends State<TransactionSheet> {
                         )
                       : new Container(),
                   new Container(
+                    margin: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: new FloatingActionButton(
                         child: Icon(Icons.check),
                         elevation: symbol != null &&
