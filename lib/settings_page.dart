@@ -51,6 +51,35 @@ class SettingsPageState extends State<SettingsPage> {
         });
   }
 
+  _confirmDeleteExchangesIntegration() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return new AlertDialog(
+            title: new Text("Clear Exchanges Integration?"),
+            content: new Text("This will permanently delete all integrations."),
+            actions: <Widget>[
+              new FlatButton(
+                  onPressed: () async {
+                    await _deleteExchangesIntegration();
+                    Navigator.of(context).pop();
+                  },
+                  child: new Text("Delete")),
+              new FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: new Text("Cancel"))
+            ],
+          );
+        });
+  }
+
+  Future<Null> _deleteExchangesIntegration() async {
+    setState(() {
+      binance.deleteCredentials();
+      loadExchangeData();
+    });
+  }
+
   Future<Null> _deletePortfolio() async {
     getApplicationDocumentsDirectory().then((Directory directory) {
       File jsonFile = new File(directory.path + "/portfolio.json");
@@ -111,11 +140,11 @@ class SettingsPageState extends State<SettingsPage> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber; 
+      buildNumber = packageInfo.buildNumber;
     });
   }
 
-  void initState() { 
+  void initState() {
     super.initState();
     _getVersion();
   }
@@ -217,19 +246,27 @@ class SettingsPageState extends State<SettingsPage> {
           new Container(
             color: Theme.of(context).cardColor,
             child: new ListTile(
+              title: new Text("Clear Account Plugins"),
+              leading: new Icon(Icons.delete),
+              onTap: _confirmDeleteExchangesIntegration,
+            ),
+          ),
+          new Container(
+            color: Theme.of(context).cardColor,
+            child: new ListTile(
               title: new Text("Issues & Feature Requests"),
               leading: new Icon(Icons.bug_report),
               onTap: () =>
-                  _launchUrl("https://github.com/trentpiercy/trace/issues"),
+                  _launchUrl("https://github.com/ftuyama/trace/issues"),
             ),
           ),
           new Container(
             color: Theme.of(context).cardColor,
             child: new ListTile(
               title: new Text("Version $version ($buildNumber)"),
-              subtitle: new Text("github.com/trentpiercy/trace"),
+              subtitle: new Text("github.com/ftuyama/trace"),
               leading: new Icon(Icons.info_outline),
-              onTap: () => _launchUrl("https://github.com/trentpiercy/trace"),
+              onTap: () => _launchUrl("https://github.com/ftuyama/trace"),
             ),
           ),
           new Container(
@@ -244,14 +281,14 @@ class SettingsPageState extends State<SettingsPage> {
                   text: "Maintained with love by ",
                   style: Theme.of(context).textTheme.subhead,
                   children: <TextSpan>[
-                    TextSpan(text: "@TrentPiercy", style: Theme.of(context).textTheme.subhead
+                    TextSpan(text: "@Tuyama", style: Theme.of(context).textTheme.subhead
                       .apply(color: Theme.of(context).buttonColor, fontWeightDelta: 2))
                   ]
                 )
               ),
-              subtitle: new Text("twitter.com/trentpiercy"),
+              subtitle: new Text("github.com/ftuyama"),
               leading: new Icon(Icons.favorite),
-              onTap: () => _launchUrl("https://twitter.com/trentpiercy"),
+              onTap: () => _launchUrl("https://github.com/ftuyama"),
             ),
           ),
         ],
