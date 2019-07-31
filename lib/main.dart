@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:Trace/service/binance_classes.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
+import './service/binance.dart';
+import 'account/plugin.dart';
 import 'tabs.dart';
 import 'settings_page.dart';
 
@@ -25,6 +28,8 @@ String upArrow = "⬆";
 String downArrow = "⬇";
 
 int lastUpdate;
+
+BinanceApi binance;
 
 Future<Null> getMarketData() async {
   int numberOfCoins = 1500;
@@ -81,6 +86,8 @@ void main() async {
       jsonFile.writeAsStringSync("[]");
       marketListData = [];
     }
+
+    await loadExchangeData();
   });
 
   String themeMode = "Automatic";
@@ -94,6 +101,31 @@ void main() async {
   }
 
   runApp(new TraceApp(themeMode, darkOLED));
+}
+
+loadExchangeData() async {
+  binance = BinanceApi();
+
+  await binance.fetchCredentials();
+
+  if (binance.credentials != null) {
+    AccountInfo accountInfo = await binance.accountInfo();
+
+    portfolioMap = {};
+
+    accountInfo.balances.where((balance) =>
+      double.parse(balance.free) > 0 || double.parse(balance.locked) > 0
+    ).forEach((balance) =>
+      portfolioMap.putIfAbsent(balance.asset, () => [{
+        'quantity': double.parse(balance.free) + double.parse(balance.locked),
+        'price_usd': 0,
+        'exchange': 'binance',
+        'time_epoch': 1564527480000,
+        'notes': ''
+      }])
+    );
+
+  }
 }
 
 numCommaParse(numString) {
@@ -308,6 +340,14 @@ class TraceAppState extends State<TraceApp> {
       ),
       theme: darkEnabled ? darkOLED ? darkThemeOLED : darkTheme : lightTheme,
       routes: <String, WidgetBuilder>{
+        "/account/plugin": (BuildContext context) => new AccountPlugin(
+              savePreferences: savePreferences,
+              toggleTheme: toggleTheme,
+              darkEnabled: darkEnabled,
+              themeMode: themeMode,
+              switchOLED: switchOLED,
+              darkOLED: darkOLED,
+            ),
         "/settings": (BuildContext context) => new SettingsPage(
               savePreferences: savePreferences,
               toggleTheme: toggleTheme,

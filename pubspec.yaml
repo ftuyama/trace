@@ -10,6 +10,10 @@ dependencies:
   url_launcher: ^3.0.3
   http: ^0.12.0
   package_info: ^0.3.2
+  binance: ^1.0.1
+  crypto: ^2.0.6
+  hex: ^0.1.2
+  qr_reader: ^0.1.3
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +29,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+  fonts:
+   - family:  Binance
+     fonts:
+      - asset: assets/fonts/Binance.ttf
